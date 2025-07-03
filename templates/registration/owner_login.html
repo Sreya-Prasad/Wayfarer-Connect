@@ -1,0 +1,86 @@
+<!-- templates/registration/login.html -->
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* Custom styles for input fields */
+    input[type="text"], input[type="password"] {
+        width: 100%; /* Full width */
+        padding: 6px 14px; /* Padding for comfort */
+        border-radius: 8px; /* Rounded corners */
+        border: 1px solid #e2e8f0; /* Light gray border */
+        background-color: #f7fafc; /* Light gray background */
+        font-size: 1rem; /* Font size */
+        color: #4a5568; /* Text color */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition on focus */
+    }
+    
+    /* Border and shadow effect on focus */
+    input[type="text"]:focus, input[type="password"]:focus {
+        border-color: #3182ce; /* Blue border on focus */
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Subtle blue shadow */
+        outline: none; /* Remove default outline */
+    }
+    
+    /* Adding spacing between labels and inputs */
+    label {
+        display: block;
+        margin-bottom: 4px; /* Space between label and input */
+    }
+    
+    /* Styling for the form container */
+    form {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+    }
+    
+    /* Submit button styles */
+    button[type="submit"] {
+        padding: 14px 20px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        background-color: #3182ce; /* Blue background */
+        color: white;
+        width: 100%;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    button[type="submit"]:hover {
+        background-color: #2b6cb0; /* Darker blue on hover */
+    }
+    
+
+</style>
+
+<div class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-3xl font-semibold text-center text-gray-800 mb-6">Owner Login</h2>
+        
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Form Fields -->
+            <div class="space-y-4">
+                {{ form.as_p }}
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Login
+            </button>
+        </form>
+        
+        <p class="text-center text-gray-600 mt-4">
+            Don't have an account? 
+            <a href="{% url 'owner_signup' %}" class="text-blue-600 hover:text-blue-700">Sign Up</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

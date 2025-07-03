@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+
+<style>
+    .xinput input[type="email"], input[type="text"], input[type="password"] {
+        width: 100%; /* Full width */
+        padding: 6px 14px; /* Padding for comfort */
+        border-radius: 8px; /* Rounded corners */
+        border: 1px solid #e2e8f0; /* Light gray border */
+        background-color: #f7fafc; /* Light gray background */
+        font-size: 1rem; /* Font size */
+        color: #4a5568; /* Text color */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition on focus */
+    }
+    menu, ol, ul {
+        display:none;
+    }
+
+</style>
+
+<div class="flex justify-center items-center min-h-screen ">
+    <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md xinput">
+        <h2 class="text-3xl font-semibold text-center text-gray-800 mb-6">Sign Up</h2>
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <div class="space-y-4">
+                {% for field in form %}
+                    <div>
+                        <label class="block text-gray-700 font-medium">{{ field.label }}</label>
+                        <div class="mt-1">
+                            {{ field }}
+                        </div>
+                        
+                        <!-- Handling helper text and password-specific list items -->
+                        
+                        {% if field.help_text %}
+                            <p class="text-sm text-gray-500">{{ field.help_text }}</p>
+                        {% endif %}
+                        
+                        {% if field.field.widget.input_type == "password" %}
+                            <ul class="text-sm text-gray-500 list-disc list-inside">
+                                {% for help in field.help_text.splitlines %}  
+                                    <li>{{ help }}</li>  
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        
+                        {% for error in field.errors %}
+                            <p class="text-sm text-red-500">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                
+            </div>
+            <p class="text-sm text-gray-500" style="font-size:12px;">*Create a strong password with 8 characters and should be a mix of letters, numbers and symbols.*</p>
+
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Sign Up
+            </button>
+        </form>
+
+        <p class="text-center text-gray-600 mt-4">
+            Already have an account? 
+            <a href="{% url 'login' %}" class="text-blue-600 hover:text-blue-700">Login</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
