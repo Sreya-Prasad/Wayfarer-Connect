@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Search Trips{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Initial Booking Type Selection -->
+        <div class="mb-12">
+            <label for="initialBookingType" class="block text-sm font-medium text-gray-700 mb-2">Select Booking Type</label>
+            <select id="initialBookingType" onchange="toggleBookingSections()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm">
+                <option value="">Select booking type...</option>
+                <option value="FR">Flight and Room</option>
+                <option value="TR">Train and Room</option>
+                <option value="R">Room Only</option>
+                <option value="F">Flight Only</option>
+                <option value="T">Train Only</option>
+            </select>
+        </div>
+
+        <!-- Available Flights Section -->
+        {% if flights %}
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Available Flights</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for flight in flights %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="{{ flight.image.url }}" alt="Flight Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">{{ flight.name }} </h3>
+
+                                <h3 class="text-lg font-semibold text-gray-900">{{ flight.start_location }} → {{ flight.end_location }}</h3>
+                                <p class="text-sm text-gray-600">Departure: {{ flight.departure_time }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-indigo-600">Rs{{ flight.price }}</p>
+                                <p class="text-sm text-gray-500">{{ flight.available_seats }} seats left</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Available Trains Section -->
+        {% if trains %}
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Available Trains</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for train in trains %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="{{ train.image.url }}" alt="Train Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">{{ train.name }} </h3>
+                                <h3 class="text-lg font-semibold text-gray-900">{{ train.start_location }} → {{ train.end_location }}</h3>
+                                <p class="text-sm text-gray-600">Departure: {{ train.departure_time }}</p>
+                                <p class="text-sm text-gray-600">Arrival: {{ train.arrival_time }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-indigo-600">Rs{{ train.price }}</p>
+                                <p class="text-sm text-gray-500">{{ train.available_seats }} seats left</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Room Cards Section -->
+        <div id="roomSection" class="hidden mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Available Rooms</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for room in rooms %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="{{ room.image.url }}" alt="Room Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ room.name }}</h3>
+                        <p class="text-indigo-600 font-bold mb-4">Rs{{ room.price_per_night }} per night</p>
+                        <p class="text-gray-600 mb-4">{{ room.location }}</p>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label for="check_in_{{ room.id }}" class="block text-sm font-medium text-gray-700">Check-in</label>
+                                <input type="date" id="check_in_{{ room.id }}" name="check_in_{{ room.id }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+                            
+                            <div>
+                                <label for="check_out_{{ room.id }}" class="block text-sm font-medium text-gray-700">Check-out</label>
+                                <input type="date" id="check_out_{{ room.id }}" name="check_out_{{ room.id }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+                            
+                            <button onclick="selectRoom('{{ room.id }}', '{{ room.price_per_night }}')" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                Select Room
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Transportation Only Section -->
+        <div id="transportationOnlySection" class="hidden mb-12">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div id="flightOnlySection" class="hidden space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Select Flight</h3>
+                    <div>
+                        <label for="flight_only_id" class="block text-sm font-medium text-gray-700">Choose Flight</label>
+                        <select id="flight_only_id" name="flight_id" onchange="updateTransportOnlyPrice()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md">
+                            {% for flight in flights %}
+                            <option value="{{ flight.id }}" data-price="{{ flight.price }}">
+                                {{ flight.name }} - Rs{{ flight.price }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="flight_only_seats" class="block text-sm font-medium text-gray-700">Number of Seats</label>
+                        <input type="number" id="flight_only_seats" name="flight_seats" min="1" max="10" value="1" onchange="updateTransportOnlyPrice()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                </div>
+
+                <div id="trainOnlySection" class="hidden space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Select Train</h3>
+                    <div>
+                        <label for="train_only_id" class="block text-sm font-medium text-gray-700">Choose Train</label>
+                        <select id="train_only_id" name="train_id" onchange="updateTransportOnlyPrice()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md">
+                            {% for train in trains %}
+                            <option value="{{ train.id }}" data-price="{{ train.price }}">
+                                {{ train.name }} - Rs{{ train.price }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="train_only_seats" class="block text-sm font-medium text-gray-700">Number of Seats</label>
+                        <input type="number" id="train_only_seats" name="train_seats" min="1" max="10" value="1" onchange="updateTransportOnlyPrice()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Section -->
+        <div id="bookingSection" class="hidden">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Complete Your Booking</h3>
+                <form id="bookingForm" method="POST" action="{% url 'book_trip' %}" class="space-y-6">
+                    {% csrf_token %}
+                    <input type="hidden" id="booking_type" name="booking_type">
+                    <input type="hidden" id="room_id" name="room_id">
+                    
+                    <!-- Transportation Options -->
+                    <div id="flightSection" class="hidden space-y-4">
+                        <div>
+                            <label for="flight_id" class="block text-sm font-medium text-gray-700">Select Flight</label>
+                            <select name="flight_id" id="flight_id" onchange="updateTotalCost()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md">
+                                {% for flight in flights %}
+                                <option value="{{ flight.id }}" data-price="{{ flight.price }}">
+                                    {{ flight.name }} - Rs{{ flight.price }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="flight_seats" class="block text-sm font-medium text-gray-700">Number of Seats</label>
+                            <input type="number" id="flight_seats" name="flight_seats" min="1" max="10" value="1" onchange="updateTotalCost()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+                    </div>
+
+                    <div id="trainSection" class="hidden space-y-4">
+                        <div>
+                            <label for="train_id" class="block text-sm font-medium text-gray-700">Select Train</label>
+                            <select name="train_id" id="train_id" onchange="updateTotalCost()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md">
+                                {% for train in trains %}
+                                <option value="{{ train.id }}" data-price="{{ train.price }}">
+                                    {{ train.name }} - Rs{{ train.price }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="train_seats" class="block text-sm font-medium text-gray-700">Number of Seats</label>
+                            <input type="number" id="train_seats" name="train_seats" min="1" max="10" value="1" onchange="updateTotalCost()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+                    </div>
+
+                   
+                <div>
+                    <h4>Total Cost: Rs<span id="totalCost">0</span></h4>
+                </div>
+
+                <button class=" bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" type="submit">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedRoom = null;
+    let basePrice = 0;
+    
+    function toggleBookingSections() {
+        const bookingType = document.getElementById('initialBookingType').value;
+        document.getElementById('booking_type').value = bookingType;
+        
+        // Show/hide appropriate sections based on booking type
+        const showRoom = ['FR', 'TR', 'R'].includes(bookingType);
+        const showTransportOnly = ['F', 'T'].includes(bookingType);
+        
+        document.getElementById('roomSection').style.display = showRoom ? 'grid' : 'none';
+        document.getElementById('transportationOnlySection').style.display = showTransportOnly ? 'block' : 'none';
+        
+        if (showTransportOnly) {
+            document.getElementById('flightOnlySection').style.display = bookingType === 'F' ? 'block' : 'none';
+            document.getElementById('trainOnlySection').style.display = bookingType === 'T' ? 'block' : 'none';
+            document.getElementById('bookingSection').style.display = 'block';
+            updateTransportOnlyPrice();
+        }
+    }
+    
+    function selectRoom(roomId, price) {
+    
+        selectedRoom = roomId;
+        basePrice = parseFloat(price);
+        document.getElementById('room_id').value = roomId;
+        
+        // Get the dates from the selected room's inputs
+        const checkIn = document.querySelector(`#check_in_${roomId}`).value;
+        const checkOut = document.querySelector(`#check_out_${roomId}`).value;
+        
+        // Add hidden inputs to the booking form for the dates
+        let checkInInput = document.getElementById('check_in_hidden');
+        let checkOutInput = document.getElementById('check_out_hidden');
+        
+        if (!checkInInput) {
+            checkInInput = document.createElement('input');
+            checkInInput.type = 'hidden';
+            checkInInput.id = 'check_in_hidden';
+            checkInInput.name = 'check_in';
+            document.getElementById('bookingForm').appendChild(checkInInput);
+        }
+        
+        if (!checkOutInput) {
+            checkOutInput = document.createElement('input');
+            checkOutInput.type = 'hidden';
+            checkOutInput.id = 'check_out_hidden';
+            checkOutInput.name = 'check_out';
+            document.getElementById('bookingForm').appendChild(checkOutInput);
+        }
+        
+        checkInInput.value = checkIn;
+        checkOutInput.value = checkOut;
+        
+        document.getElementById('bookingSection').style.display = 'block';
+        
+        const bookingType = document.getElementById('initialBookingType').value;
+        document.getElementById('flightSection').style.display = bookingType === 'FR' ? 'block' : 'none';
+        document.getElementById('trainSection').style.display = bookingType === 'TR' ? 'block' : 'none';
+        
+        updateTotalCost();
+    }
+    
+    function updateTransportOnlyPrice() {
+        const bookingType = document.getElementById('initialBookingType').value;
+        let total = 0;
+        
+        if (bookingType === 'F') {
+            const flight = document.getElementById('flight_only_id');
+            const seats = document.getElementById('flight_only_seats').value;
+            const flightPrice = parseFloat(flight.options[flight.selectedIndex].dataset.price);
+            total = flightPrice * seats;
+
+        } else if (bookingType === 'T') {
+            const train = document.getElementById('train_only_id');
+            const seats = document.getElementById('train_only_seats').value;
+            const trainPrice = parseFloat(train.options[train.selectedIndex].dataset.price);
+            total = trainPrice * seats;
+
+        }
+        
+        document.getElementById('totalCost').textContent = total.toFixed(2);
+    }
+    
+    function updateTotalCost() {
+        const bookingType = document.getElementById('initialBookingType').value;
+        
+        if (['F', 'T'].includes(bookingType)) {
+            updateTransportOnlyPrice();
+            return;
+        }
+        
+        if (!selectedRoom) return;
+        
+        let total = basePrice;
+        
+        // Calculate number of nights for room bookings
+        const roomId = selectedRoom;
+        const checkIn = document.querySelector(`#check_in_${roomId}`).value;
+        const checkOut = document.querySelector(`#check_out_${roomId}`).value;
+        
+        if (checkIn && checkOut) {
+            const nights = Math.floor((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
+            total *= nights;
+        }
+        
+        // Add transportation costs for combined bookings
+        if (bookingType === 'FR') {
+            const flight = document.getElementById('flight_id');
+            
+            const seats = document.getElementById('flight_seats').value;
+            const flightPrice = parseFloat(flight.options[flight.selectedIndex].dataset.price);
+            total += flightPrice * seats;
+        } else if (bookingType === 'TR') {
+            const train = document.getElementById('train_id');
+            const seats = document.getElementById('train_seats').value;
+            const trainPrice = parseFloat(train.options[train.selectedIndex].dataset.price);
+            total += trainPrice * seats;
+        }
+        document.getElementById('totalCost').textContent = total.toFixed(2);
+    }
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        const bookingType = document.getElementById('initialBookingType').value;
+        
+        // For transport-only bookings, copy values from the transport-only sections to the main form
+        if (bookingType === 'F') {
+            // Get values from the flight-only section
+            const flightId = document.getElementById('flight_only_id').value;
+            const flightSeats = document.getElementById('flight_only_seats').value;
+            
+            // Set these values in the main form fields
+            document.getElementById('flight_id').value = flightId;
+            document.getElementById('flight_seats').value = flightSeats;
+            
+            // Disable train inputs so they don't get submitted
+            document.getElementById('train_id').disabled = true;
+            document.getElementById('train_seats').disabled = true;
+        } else if (bookingType === 'T') {
+            // Get values from the train-only section
+            const trainId = document.getElementById('train_only_id').value;
+            const trainSeats = document.getElementById('train_only_seats').value;
+            
+            // Set these values in the main form fields
+            document.getElementById('train_id').value = trainId;
+            document.getElementById('train_seats').value = trainSeats;
+            
+            // Disable flight inputs so they don't get submitted
+            document.getElementById('flight_id').disabled = true;
+            document.getElementById('flight_seats').disabled = true;
+        } else if (bookingType === 'R') {
+            // For Room Only, disable both flight and train fields
+            document.getElementById('flight_id').disabled = true;
+            document.getElementById('flight_seats').disabled = true;
+            document.getElementById('train_id').disabled = true;
+            document.getElementById('train_seats').disabled = true;
+        }
+    });
+    // Add event listeners
+    document.querySelectorAll('select, input[type="number"], .date-input').forEach(element => {
+        element.addEventListener('change', updateTotalCost);
+    });
+    </script>
+{% endblock %}

@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Trips{% endblock %}
+
+{% block content %}
+<div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl flex flex-col items-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mb-4"></div>
+        <p class="text-lg font-semibold text-gray-800">Sending SOS Alert...</p>
+        <p class="text-sm text-gray-600 mt-2">Please don't close this window</p>
+    </div>
+</div>
+
+    <div class="min-h-screen  py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-red-600 mb-2">SOS Alert</h1>
+                <p class="text-gray-600">Send emergency alerts to your selected contacts</p>
+            </div>
+
+
+
+            <!-- Contact Selection Section -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Select Contacts to Send SOS:</h3>
+                <div id="contacts-list" class="space-y-3"></div>
+                
+                <button onclick="sendSOS()" class="mt-6 w-full bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200 flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                    Send SOS
+                </button>
+            </div>
+
+            <!-- History Section -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <span class="mr-2">📋</span> Previous Alerts
+                </h2>
+                <div id="sos-list" class="space-y-4">
+                    <div class="animate-pulse flex space-x-4">
+                        <div class="flex-1 space-y-4 py-1">
+                            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                            <div class="space-y-2">
+                                <div class="h-4 bg-gray-200 rounded"></div>
+                                <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <!-- Add Contact Form -->
+                        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Add Emergency Contact</h3>
+                            <form id="contact-form" class="space-y-4">
+                                <div>
+                                    <label for="contact-name" class="block text-sm font-medium text-gray-700">Name</label>
+                                    <input type="text" id="contact-name" name="name" required
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                                </div>
+                                <div>
+                                    <label for="contact-phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                                    <input type="tel" id="contact-phone" name="phone_number" required
+                                           placeholder="+1234567890"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                                </div>
+                                <button type="submit" 
+                                        class="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200">
+                                    Add Contact
+                                </button>
+                            </form>
+                        </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchContacts();
+            fetchSOSHistory();
+            setupContactForm();
+        });
+
+        function setupContactForm() {
+            const form = document.getElementById('contact-form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = {
+                    name: form.elements.name.value,
+                    phone_number: form.elements.phone_number.value
+                };
+
+                try {
+                    const response = await fetch('/add_contact/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        form.reset();
+                        fetchContacts();
+                        alert('Contact added successfully!');
+                    } else {
+                        const error = await response.text();
+                        alert('Error adding contact: ' + error);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error adding contact. Please try again.');
+                }
+            });
+        }
+
+        function fetchContacts() {
+            fetch('/get_contacts/')
+                .then(response => response.json())
+                .then(data => {
+                    const contactsDiv = document.getElementById('contacts-list');
+                    contactsDiv.innerHTML = '';
+                    data.contacts.forEach(contact => {
+                        const div = document.createElement('div');
+                        div.className = 'flex items-center justify-between p-3 hover:bg-gray-50 rounded-md transition-colors duration-150';
+                        
+                        div.innerHTML = `
+                            <div class="flex items-center space-x-3">
+                                <input type="checkbox" 
+                                       id="contact-${contact.id}" 
+                                       value="${contact.id}"
+                                       class="h-5 w-5 text-red-600 focus:ring-red-500 rounded border-gray-300 cursor-pointer">
+                                <label for="contact-${contact.id}" 
+                                       class="flex flex-col cursor-pointer">
+                                    <span class="font-medium text-gray-900">${contact.name}</span>
+                                    <span class="text-sm text-gray-500">${contact.phone_number}</span>
+                                </label>
+                            </div>
+                            <button onclick="deleteContact(${contact.id})" 
+                                    class="text-red-600 hover:text-red-800 focus:outline-none">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        `;
+                        
+                        contactsDiv.appendChild(div);
+                    });
+                })
+                .catch(error => console.error('Error fetching contacts:', error));
+        }
+
+        async function deleteContact(contactId) {
+            if (!confirm('Are you sure you want to delete this contact?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/delete_contact/${contactId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+
+                if (response.ok) {
+                    fetchContacts();
+                } else {
+                    const error = await response.text();
+                    alert('Error deleting contact: ' + error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error deleting contact. Please try again.');
+            }
+        }
+
+        function fetchSOSHistory() {
+            fetch('/get_sos_history/')
+                .then(response => response.json())
+                .then(data => {
+                    const sosList = document.getElementById('sos-list');
+                    sosList.innerHTML = '';
+
+                    if (data.alerts.length === 0) {
+                        sosList.innerHTML = `
+                            <div class="text-center py-6 text-gray-500">
+                                <p>No previous SOS alerts found.</p>
+                            </div>
+                        `;
+                    } else {
+                        data.alerts.forEach(alert => {
+                            const div = document.createElement('div');
+                            div.className = 'border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200';
+                            div.innerHTML = `
+                                <div class="grid grid-cols-2 gap-4 mb-2">
+                                    <div>
+                                        <p class="text-sm text-gray-500">Location</p>
+                                        <p class="font-medium">📍 ${alert.location}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-500">Coordinates</p>
+                                        <p class="font-medium">🌐 (${alert.latitude}, ${alert.longitude})</p>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mb-2">
+                                    <div>
+                                        <p class="text-sm text-gray-500">Sent At</p>
+                                        <p class="font-medium">📅 ${alert.timestamp}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-500">Status</p>
+                                        <p class="font-medium ${alert.message_sent ? 'text-green-600' : 'text-red-600'}">
+                                            ${alert.message_sent ? '✅ Sent' : '❌ Not Sent'}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-500">Contacts</p>
+                                    <p class="font-medium">📞 ${alert.contacts.join(', ')}</p>
+                                </div>
+                            `;
+                            sosList.appendChild(div);
+                        });
+                    }
+                })
+                .catch(error => console.error('Error fetching SOS history:', error));
+        }
+        function toggleLoadingOverlay(show) {
+            const overlay = document.getElementById('loading-overlay');
+            overlay.style.display = show ? 'flex' : 'none';
+        }
+        function sendSOS() {
+            const selectedContacts = Array.from(document.querySelectorAll('#contacts-list input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+
+            if (selectedContacts.length === 0) {
+                alert("Please select at least one contact.");
+                return;
+            }
+
+            if (navigator.geolocation) {
+                toggleLoadingOverlay(true); // Show loading overlay
+                
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+
+                    fetch('/sos/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({
+                            latitude: latitude,
+                            longitude: longitude,
+                            contacts: selectedContacts
+                        })
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        toggleLoadingOverlay(false); // Hide loading overlay
+                        alert(data);
+                        fetchSOSHistory();
+                    })
+                    .catch(error => {
+                        toggleLoadingOverlay(false); // Hide loading overlay
+                        console.error('Error:', error);
+                        alert('Error sending SOS alert. Please try again.');
+                    });
+                }, function(error) {
+                    toggleLoadingOverlay(false); // Hide loading overlay
+                    alert('Error getting location: ' + error.message);
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+{% endblock %}

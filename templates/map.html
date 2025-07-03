@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Search Trips{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Plan Your Route</h2>
+            <p class="text-gray-600">Select your starting and ending locations to find the best route.</p>
+        </div>
+
+        <!-- Form Section -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <form id="routeForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Start Location -->
+                    <div>
+                        <label for="start" class="block text-sm font-medium text-gray-700 mb-2">Start Location</label>
+                        <select id="start" name="start" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                            <option value="current">Current Location</option>
+                            {% for location in locations %}
+                                <option value="{{ location.name }}">{{ location.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- End Location -->
+                    <div>
+                        <label for="end" class="block text-sm font-medium text-gray-700 mb-2">End Location</label>
+                        <select id="end" name="end" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                            {% for location in locations %}
+                                <option value="{{ location.name }}">{{ location.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                        Find Route
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Map Container -->
+        <div class="bg-white rounded-lg shadow-sm p-2">
+            <div id="map" class="h-[600px] w-full rounded-lg"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var map = L.map('map').setView([20, 78], 5);
+    var currentLocationMarker = null;
+    var routeUpdateInterval = null;
+    var isUsingCurrentLocation = false;
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors, &copy; CartoDB'
+    }).addTo(map);
+    
+    var gasStationIcon = L.icon({
+        iconUrl: "{% static 'logo.png' %}",
+        iconSize: [48, 48],
+        iconAnchor: [24, 24],
+        popupAnchor: [0, -24]
+    });
+
+    function fetchGasStations(user_lat, user_lon) {
+        $.getJSON('/fetch_gas_stations/', {
+            user_lat: user_lat,
+            user_lon: user_lon
+        }, function(data) {
+            map.eachLayer(function(layer) {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+            
+            data.gas_stations.forEach(function(station) {
+                L.marker([station.lat, station.lon], { icon: gasStationIcon })
+                    .addTo(map)
+                    .bindPopup(`
+                        <div class="p-2">
+                            <h3 class="font-semibold">${station.name}</h3>
+                        </div>
+                    `);
+            });
+        });
+    }
+
+    function updateRoute(start_location, end_location, user_lat, user_lon) {
+        let params = {
+            end: end_location
+        };
+        
+        if (start_location === 'current') {
+            params.start_lat = user_lat;
+            params.start_lon = user_lon;
+            params.use_current = true;
+        } else {
+            params.start = start_location;
+        }
+        
+        $.getJSON('/get_route/', params, function(data) {
+            map.eachLayer(function(layer) {
+                if (layer instanceof L.Polyline) {
+                    map.removeLayer(layer);
+                }
+            });
+            
+            var route = data.route.features[0].geometry;
+            var routeCoords = route.coordinates.map(coord =>
+                [coord[1], coord[0]]
+            );
+            
+            var routeLine = L.polyline(routeCoords, {
+                color: '#3B82F6',
+                weight: 5,
+                opacity: 0.8
+            }).addTo(map);
+            
+            map.fitBounds(routeLine.getBounds());
+            
+            if (start_location === 'current' && currentLocationMarker) {
+                currentLocationMarker.setLatLng([user_lat, user_lon]);
+            }
+        });
+    }
+
+    function startLocationUpdates(end_location) {
+        if (routeUpdateInterval) {
+            clearInterval(routeUpdateInterval);
+        }
+        
+        routeUpdateInterval = setInterval(function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var user_lat = position.coords.latitude;
+                    var user_lon = position.coords.longitude;
+                    updateRoute('current', end_location, user_lat, user_lon);
+                    fetchGasStations(user_lat, user_lon);
+                });
+            }
+        }, 300000);
+    }
+
+    $('#routeForm').submit(function(e) {
+        e.preventDefault();
+        var start = $('#start').val();
+        var end = $('#end').val();
+        
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var user_lat = position.coords.latitude;
+                var user_lon = position.coords.longitude;
+                
+                if (start === 'current') {
+                    if (!currentLocationMarker) {
+                        currentLocationMarker = L.marker([user_lat, user_lon])
+                            .bindPopup('Current Location')
+                            .addTo(map);
+                    } else {
+                        currentLocationMarker.setLatLng([user_lat, user_lon]);
+                    }
+                    startLocationUpdates(end);
+                } else {
+                    if (routeUpdateInterval) {
+                        clearInterval(routeUpdateInterval);
+                        routeUpdateInterval = null;
+                    }
+                    
+                    if (currentLocationMarker) {
+                        map.removeLayer(currentLocationMarker);
+                        currentLocationMarker = null;
+                    }
+                }
+                
+                updateRoute(start, end, user_lat, user_lon);
+                fetchGasStations(user_lat, user_lon);
+            }, function(error) {
+                alert('Unable to retrieve your location. Please enable location services and try again.');
+            });
+        } else {
+            alert('Geolocation is not supported by your browser.');
+        }
+    });
+
+    $('#start').change(function() {
+        if ($(this).val() !== 'current' && routeUpdateInterval) {
+            clearInterval(routeUpdateInterval);
+            routeUpdateInterval = null;
+        }
+    });
+</script>
+{% endblock %}

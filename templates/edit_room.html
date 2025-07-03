@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- edit_room.html -->
+<form method="POST" enctype="multipart/form-data" class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    {% csrf_token %}
+    <h3 class="text-3xl font-semibold text-center mb-6">Edit Room</h3>
+
+    <!-- Location -->
+    <div class="mb-4">
+        <label for="location" class="block text-lg font-semibold text-gray-700">Location</label>
+        <select id="location" name="location" class="w-full p-3 border border-gray-300 rounded-md">
+            {% for location in locations %}
+                <option value="{{ location.id }}" {% if room.location.id == location.id %}selected{% endif %}>{{ location.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Price per Night -->
+    <div class="mb-4">
+        <label for="price_per_night" class="block text-lg font-semibold text-gray-700">Price per Night</label>
+        <input type="number" id="price_per_night" name="price_per_night" value="{{ room.price_per_night }}" step="0.01" class="w-full p-3 border border-gray-300 rounded-md">
+    </div>
+
+    <!-- Description -->
+    <div class="mb-4">
+        <label for="description" class="block text-lg font-semibold text-gray-700">Description</label>
+        <textarea id="description" name="description" class="w-full p-3 border border-gray-300 rounded-md">{{ room.description }}</textarea>
+    </div>
+
+    <!-- Available Status -->
+    <div class="mb-4">
+        <label for="is_available" class="block text-lg font-semibold text-gray-700">Available</label>
+        <input type="checkbox" id="is_available" name="is_available" {% if room.is_available %}checked{% endif %} class="p-3 border border-gray-300 rounded-md">
+    </div>
+
+    <!-- Image -->
+    <div class="mb-4">
+        <label for="image" class="block text-lg font-semibold text-gray-700">Room Image</label>
+        <input type="file" id="image" name="image" class="w-full p-3 border border-gray-300 rounded-md">
+    </div>
+
+    <div class="flex justify-center space-x-4">
+        <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save Changes</button>
+        <a href="{% url 'owner_dashboard' %}" class="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400">Cancel</a>
+    </div>
+</form>
+{% endblock %}
