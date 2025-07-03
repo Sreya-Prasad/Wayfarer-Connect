@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <!-- basic -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <!-- mobile metas -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <!-- site metas -->
+      <title>A World</title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <!-- bootstrap css -->
+    <!-- Load static in Django -->
+    {% load static %}
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    
+    <!-- Style CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/fevicon.png' %}" type="image/gif" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/jquery.mCustomScrollbar.min.css' %}">
+    
+    <!-- Tweaks for older IEs -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,700|Righteous&display=swap" rel="stylesheet">
+    
+    <!-- Owl Carousel Stylesheets -->
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    
+    <!-- Fancybox CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+   </head>
+   <body>
+      <!-- header section start -->
+      <div class="header_section">
+         <div class="header_main">
+            <div class="mobile_menu">
+               <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                  <div class="logo_mobile">
+                     <a href="index.html">
+                         {% comment %} <img src="{% static 'images/logo.png' %}" alt="Logo"> {% endcomment %}
+                         <h1>Wayfarer</h1>
+                     </a>
+                 </div>
+                                   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarNav">
+                     <ul class="navbar-nav">
+                        <li class="nav-item">
+                           <a class="nav-link" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" href="#aboutusx">About</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link " href="#contact">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link " href="{% url "login" %}">login</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link " href="{% url "signup" %}">signup</a>
+                        </li>
+
+                        <!-- <li class="nav-item">
+                           <a class="nav-link " href="login.html">login</a>
+                        </li> -->
+                     </ul>
+                  </div>
+               </nav>
+            </div>
+            <div class="container-fluid">
+               <div class="logo"><a href="index.html">
+                  {% comment %} <img src="{% static 'images/logo.png' %}" alt="Logo"> {% endcomment %}
+                  <h1 style="
+                     font-size: 4rem;
+                     font-weight: bold;
+
+                     font-family: 'Righteous', Regular;
+                     font-weight: 750;
+                     font-style: normal;
+
+                     
+                     /* text-transform: uppercase; */
+                     
+                     letter-spacing: 2px;
+                     text-align: center;
+                     color:white;
+                     -webkit-background-clip: text;
+                     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+                  ">
+                  WAYFARER 
+
+                  CONNECT
+                  
+                  </h1>
+               
+               </a></div>
+               <div class="menu_main">
+                  <ul>
+                     <li class="active"><a href="{% url "index" %}">Home</a></li>
+                     <li><a href="#aboutusx">About</a></li>
+    
+                     <li><a href="#contact">Contact us</a></li>
+                     <li><a href="{% url "login" %}">login</a></li>
+                     <li><a href="{% url "signup" %}">Sign up</a></li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <!-- banner section start -->
+         <div class="banner_section layout_padding">
+            <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+               <div class="carousel-inner">
+                  <div class="carousel-item active">
+                     <div class="container">
+                        <h1 class="banner_taital" style='font-size:3rem !important'>Adventure</h1>
+                        <p class="banner_text">Global Exploration: Connecting you with the best destinations around the world, providing detailed guides, tips, and recommendations to make your travels unforgettable.</p>
+                        {% comment %} <div class="read_bt"><a href="#">Get A Quote</a></div> {% endcomment %}
+                     </div>
+                  </div>
+                  <div class="carousel-item">
+                     <div class="container">
+                        <h1 class="banner_taital" style='font-size:3rem !important'>Adventure</h1>
+                        <p class="banner_text">Community Connection: Join a community of like-minded adventurers, share your experiences, get advice, and find travel buddies who share your passion for exploration.</p>
+                        {% comment %} <div class="read_bt"><a href="#">Get A Quote</a></div> {% endcomment %}
+                     </div>
+                  </div>
+                  <div class="carousel-item">
+                     <div class="container">
+                        <h1 class="banner_taital" style='font-size:3rem !important'>Adventure</h1>
+                        <p class="banner_text">Personalized Adventures: Tailor your travel plans with customizable itineraries that suit your interests, whether you're into hiking, cultural experiences, food adventures, or luxury travel.</p>
+                        {% comment %} <div class="read_bt"><a href="#">Get A Quote</a></div> {% endcomment %}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- banner section end -->
+      </div>
+          <!-- services section start -->
+      <div class="services_section layout_padding">
+         <div class="container">
+            <h1 class="services_taital">Services </h1>
+            <p class="services_text"> Is your comprehensive travel and adventure platform, offering a wide range of services to ensure that your travel experiences are seamless, enjoyable, and unforgettable. Here's a breakdown of the key services provided by Wayfarer Connect</p>
+            <div class="services_section_2">
+               <div class="row">
+                  <div class="col-md-4">
+                     <div><img src="{% static 'images/img-1.png' %}" class="services_img"></div>
+                     <div class="btn_main"><a href="{% url "login" %}">Trip Planning</a></div>
+                  </div>
+                  <div class="col-md-4">
+                     <div><img src="{% static 'images/img-2.png' %}" class="services_img"></div>
+                     <div class="btn_main"><a href="{% url "login" %}">Budget friendly</a></div>
+                  </div>
+                  <div class="col-md-4">
+                     <div><img src="{% static 'images/img-3.png' %}" class="services_img"></div>
+                     <div class="btn_main"><a href="{% url "login" %}">Booking Services</a></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- services section end -->
+      <!-- about section start -->
+      <div class="about_section layout_padding" id="aboutusx">
+         <div class="container-fluid">
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="about_taital_main">
+                     <h1 class="about_taital">About Us</h1>
+                     <p class="about_text">At Wayfarer Connect, we believe in the transformative power of travel. We envision a world where everyone has the opportunity to explore new places, experience diverse cultures, and connect with people from all walks of life. Our goal is to inspire and empower travelers to embark on their own adventures, fostering a global community united by a shared love of exploration. </p>
+                     <div class="readmore_bt"><a href="{% url "about" %}">See More</a></div>
+                  </div>
+               </div>
+               <div class="col-md-6 padding_right_0">
+                  <div><img src="{% static 'images/about-img.png' %}" class="about_img"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- about section end -->
+      <!-- blog section start -->
+      {% comment %} <div class="blog_section layout_padding">
+         <div class="container">
+            <h1 class="blog_taital">See Our  Video</h1>
+            <p class="blog_text">Wayfarer Connect See is an innovative feature designed to bring your travel experiences to life through the power of video. This service offers a unique way to explore, plan, and share your adventures visually, making your journey more immersive and engaging.</p>
+            <div class="play_icon_main">
+               <div class="play_icon"><a href="https://youtu.be/_hZRG5gytIw?si=1-mySNtlT_o_xH-A"><img src="images/play-icon.png"></a></div>
+            </div>
+         </div>
+      </div> {% endcomment %}
+      <!-- blog section end -->
+      <!-- client section start -->
+      <div class="client_section layout_padding">
+         <div class="container">
+            <h1 class="client_taital">Testimonial</h1>
+            <div class="client_section_2">
+               <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                  <ol class="carousel-indicators">
+                     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                     <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                  </ol>
+                  <div class="carousel-inner">
+                     <div class="carousel-item active">
+                        <div class="client_main">
+                           <div class="box_left">
+                              <p class="lorem_text">
+                                 Amal, Adventure Enthusiast
+                                 "Wayfarer Connect has completely transformed the way I travel. From customized itineraries to real-time community advice, I can easily plan every aspect of my trips. The video tours are especially amazing—it's like I’m already there exploring the world! Whether I need safety tips, hotel recommendations, or even gear suggestions, I can always rely on Wayfarer Connect to keep me informed and excited for my next adventure."</p>
+                           </div>
+                           <div class="box_right">
+                              <div class="client_taital_left">
+                                 {% load static %}
+
+                                 <div class="client_img"><img src="{% static 'images/client-img01.jpg' %}"></div>
+                                 <div class="quick_icon"><img src="{% static 'images/quick-icon.png' %}"></div>
+                                 
+                              </div>
+                              <div class="client_taital_right">
+                                 <h4 class="client_name"> Amal</h4>
+                                 <p class="customer_text">Customer</p>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="carousel-item">
+                        <div class="client_main">
+                           <div class="box_left">
+                              <p class="lorem_text">James R., Solo Traveler
+                                 "As a solo traveler, I’ve always struggled with finding travel companions and good advice. Wayfarer Connect not only helped me find like-minded people but also provided me with a supportive community. The video content and real-time tours helped me explore destinations before even booking a trip, saving me time and stress. Now, I never travel without it!</p>
+                           </div>
+                           <div class="box_right">
+                              <div class="client_taital_left">
+                                 {% load static %}
+
+                                 <div class="client_img"><img src="{% static 'images/client-img2.jpg' %}"></div>
+                                 <div class="quick_icon"><img src="{% static 'images/quick-icon.png' %}"></div>
+                                 
+                              </div>
+                              <div class="client_taital_right">
+                                 <h4 class="client_name">James R.</h4>
+                                 <p class="customer_text">Customer</p>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="carousel-item">
+                        <div class="client_main">
+                           <div class="box_left">
+                              <p class="lorem_text">
+                                 Lily M., First-Time Traveler
+                                 "As someone who’s new to travel, I needed a platform that could help me plan my first solo trip. Wayfarer Connect gave me all the tools I needed—destinations to explore, budgeting tips, and even language guides. The video tutorials were especially helpful! I felt confident and prepared, and the community support gave me peace of mind. Thank you, Wayfarer Connect!"</p>
+                           </div>
+                           <div class="box_right">
+                              <div class="client_taital_left">
+                                 {% load static %}
+
+                                 <div class="client_img"><img src="{% static 'images/client-img3.jpg' %}"></div>
+                                 <div class="quick_icon"><img src="{% static 'images/quick-icon.png' %}"></div>
+                                 
+                              </div>
+                              <div class="client_taital_right">
+                                 <h4 class="client_name"> Carlos P.</h4>
+                                 <p class="customer_text">Customer</p>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- choose section end -->
+      <!-- footer section start -->
+      <div class="footer_section layout_padding" id="contact">
+         <div class="container">
+            <div class="input_btn_main">
+               <input type="text" class="mail_text" placeholder="Enter your email" name="Enter your email">
+               <div class="subscribe_bt"><a href="#">Subscribe</a></div>
+            </div>
+            <div class="location_main">
+               <div class="call_text">
+                  <img src="{% static 'images/call-icon.png' %}" alt="Call Icon">
+              </div>
+              <div class="call_text">
+                  <a href="tel:+011234567890">Call +01 1234567890</a>
+              </div>
+              <div class="call_text">
+                  <img src="{% static 'images/mail-icon.png' %}" alt="Mail Icon">
+              </div>
+              <div class="call_text">
+                  <a href="mailto:aworld@gmail.com">wayfarerconnect@gmail.com</a>
+              </div>
+            </div>
+            <div class="social_icon">
+               <ul>
+                  <li>
+                     <a href="https://www.facebook.com/confirmemail.php?next=https%3A%2F%2Fwww.facebook.com%2F">
+                        <img src="{% static 'images/fb-icon.png' %}" alt="Facebook">
+                     </a>
+                 </li>
+                 <li>
+                     <a href="#">
+                        <img src="{% static 'images/twitter-icon.png' %}" alt="Twitter">
+                     </a>
+                 </li>
+                 <li>
+                     <a href="#">
+                        <img src="{% static 'images/linkedin-icon.png' %}" alt="LinkedIn">
+                     </a>
+                 </li>
+                 <li>
+                     <a href="#">
+                        <img src="{% static 'images/instagram-icon.png' %}" alt="Instagram">
+                     </a>
+                 </li>
+                 
+               </ul>
+            </div>
+         </div>
+      </div>
+      <!-- footer section end -->
+      <!-- copyright section start -->
+      <div class="copyright_section">
+         <div class="container">
+            <p class="copyright_text">2025 All Rights Reserved. Design by <a href="https://html.design">Wayfarer Connect</a></p>
+         </div>
+      </div>
+      <!-- copyright section end -->
+      <!-- Javascript files-->
+      {% load static %}
+
+      <script src="{% static 'js/jquery.min.js' %}"></script>
+      <script src="{% static 'js/popper.min.js' %}"></script>
+      <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+      <script src="{% static 'js/jquery-3.0.0.min.js' %}"></script>
+      <script src="{% static 'js/plugin.js' %}"></script>
+      <!-- sidebar -->
+      <script src="{% static 'js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+      <script src="{% static 'js/custom.js' %}"></script>
+      <!-- javascript --> 
+      <script src="{% static 'js/owl.carousel.js' %}"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+         
+   </body>
+</html>

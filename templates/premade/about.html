@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+   <head>
+      <!-- basic -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <!-- mobile metas -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <!-- site metas -->
+      <title>About</title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      {% load static %}
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    
+    <!-- Style CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/fevicon.png' %}" type="image/gif" />
+    
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/jquery.mCustomScrollbar.min.css' %}">
+    
+    <!-- Tweaks for older IEs -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,700|Righteous&display=swap" rel="stylesheet">
+    
+    <!-- Owl Carousel Stylesheets -->
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    
+    <!-- Fancybox CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
+<style>
+  .services_section{
+   display:none;
+  }
+</style>
+
+   </head>
+   <body>
+      <!-- header section start -->
+      <div class="header_section">
+         <div class="header_main">
+            <div class="mobile_menu">
+               <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                  <div class="logo_mobile">
+                     <a href="index.html">
+                         <img src="{% static 'images/logo.png' %}" alt="Logo">
+                     </a>
+                 </div>
+                                   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarNav">
+                     <ul class="navbar-nav">
+                        <li class="nav-item">
+                           <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" href="about.html">About</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link " href="contact.html">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link " href="{% url "login" %}">login</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link " href="{% url "signup" %}">signup</a>
+                        </li>
+
+                        <!-- <li class="nav-item">
+                           <a class="nav-link " href="login.html">login</a>
+                        </li> -->
+                     </ul>
+                  </div>
+               </nav>
+            </div>
+            <div class="container-fluid">
+               <div class="logo"><a href="{% url "index" %}"><img src="../static/images/logo.png"></a></div>
+               <div class="menu_main">
+                  <ul>
+                     <li class="active"><a href="{% url "index" %}">Home</a></li>
+                     {% comment %} <li><a href="about.html">About</a></li> {% endcomment %}
+                
+                     {% comment %} <li><a href="contact.html">Contact us</a></li> {% endcomment %}
+                     <li><a href="{% url "login" %}">login</a></li>
+                     <li><a href="{% url "signup" %}">Sign up</a></li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- header section end -->
+      <!-- about section start -->
+      <div class="about_section layout_padding">
+         <div class="container-fluid">
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="about_taital_main">
+                     <h1 class="about_taital">About Us</h1>
+                     <p class="about_text" style="text-align:justify;">
+                        
+                        &emsp; At Wayfarer Connect, we believe in the transformative power of travel the kind that not only takes you to new destinations but also broadens your perspective, enriches your experiences, and creates lifelong memories. We envision a world where travel is accessible, seamless, and deeply enriching, allowing individuals to immerse themselves in the beauty of diverse landscapes, histories, and cultures.  <br>
+                        
+                        &emsp;Our mission is to bridge the gap between dream and destination, making it easier than ever for solo travelers, families, and business professionals to plan, organize, and embark on meaningful journeys. Whether you’re seeking a thrilling adventure, a relaxing getaway, or a strategic business trip, Wayfarer Connect is designed to be your trusted companion.<br>  <br>
+                        
+                        &emsp;We go beyond conventional travel services by offering personalized recommendations, real-time navigation, and curated travel experiences tailored to your unique preferences. From hassle-free hotel and transport bookings to detailed route planning and emergency assistance, every feature of Wayfarer Connect is built to ensure a stress-free and enjoyable travel experience.  <br>
+                        
+                        &emsp;At the heart of our platform is a commitment to community and connection. We aim to foster a global network of travelers, where users can share insights, exchange recommendations, and even find travel companions for their journeys. Our interactive and user-friendly interface ensures that whether you’re a seasoned explorer or a first-time traveler, you have everything you need at your fingertips.  <br>
+                        
+                        &emsp;Join us in redefining the way the world travels—because at Wayfarer Connect, every journey is more than just a trip; it’s an opportunity to discover, connect, and create unforgettable stories.
+                     </p>
+                  </div>
+               </div>
+               <div class="col-md-6 padding_right_0">
+                  <div><img src="../static/images/about-img.png" class="about_img"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- about section end -->
+      <!-- footer section start -->
+      <div class="footer_section layout_padding">
+         <div class="container">
+            <div class="input_btn_main">
+               <input type="text" class="mail_text" placeholder="Enter your email" name="Enter your email">
+               <div class="subscribe_bt"><a href="#">Subscribe</a></div>
+            </div>
+            <div class="location_main">
+               <div class="call_text"><img src="{% static 'images/call-icon.png' %}"></div>
+               <div class="call_text"><a href="#">Call +01 1234567890</a></div>
+               <div class="call_text"><img src="{% static 'images/mail-icon.png' %}"></div>
+               <div class="call_text"><a href="#">wayfarerconnect@gmail.com</a></div>
+            </div>
+            <div class="social_icon">
+               <ul>
+                  <li><a href="#"><img src="{% static 'images/fb-icon.png' %}"></a></li>
+                  <li><a href="#"><img src="{% static 'images/twitter-icon.png' %}"></a></li>
+                  <li><a href="#"><img src="{% static 'images/linkedin-icon.png' %}"></a></li>
+                  <li><a href="#"><img src="{% static 'images/instagram-icon.png' %}"></a></li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      <!-- footer section end -->
+      <!-- copyright section start -->
+      <div class="copyright_section">
+         <div class="container">
+            <p class="copyright_text">2025 All Rights Reserved. Design by <a href="https://html.design">Wayfarer Connect</a></p>
+         </div>
+      </div>
+      <!-- copyright section end -->
+      <!-- Javascript files-->
+      <script src="js/jquery.min.js"></script>
+      <script src="js/popper.min.js"></script>
+      <script src="js/bootstrap.bundle.min.js"></script>
+      <script src="js/jquery-3.0.0.min.js"></script>
+      <script src="js/plugin.js"></script>
+      <!-- sidebar -->
+      <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+      <script src="js/custom.js"></script>
+      <!-- javascript --> 
+      <script src="js/owl.carousel.js"></script>
+      <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>    
+   </body>
+</html>
